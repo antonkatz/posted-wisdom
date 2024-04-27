@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>PostedWisdom</title>
-    <script src="./main.mjs"></script>
-    <link rel="stylesheet" href="./main.css">
+    <script src="client-src/main.mjs" type="module"></script>
+    <link rel="stylesheet" href="client-src/main.css">
 </head>
 <body>
 
@@ -12,13 +12,13 @@
  wormholes happen exclusevely backwards
  -->
 
-    <div class="canvas-container">
-        <div class="tile active" id="tile_1" data-right="2">
+    <div class="canvas-container" id="board">
+        <div class="tile active" id="tile_1" data-right="2" data-aspect-ratio="1:1">
             <img src="https://posted-wisdom.s3.us-east-2.amazonaws.com/family-base.jpg">
         </div>
 
-        <div class="tile" id="tile_2" data-bottom="3">
-            <img src="">
+        <div class="tile" id="tile_2" data-bottom="3" data-aspect-ratio="1:1">
+            <img src="https://posted-wisdom.s3.us-east-2.amazonaws.com/family-base-1.jpg">
         </div>
 
 
@@ -26,8 +26,12 @@
 <!--        // from top tile that just defined the bottom tile as its bottom-->
 
 <!--        eg -->
-        <div class="tile" id="tile_3" data-bottom="3" data-top="4">
-            <img src="">
+        <div class="tile" id="tile_3" data-top="4" data-aspect-ratio="1:1">
+            <img src="https://posted-wisdom.s3.us-east-2.amazonaws.com/family-graphic.jpg">
+        </div>
+
+        <div class="tile" id="tile_4">
+            <img src="https://posted-wisdom.s3.us-east-2.amazonaws.com/family-graphic.jpg">
         </div>
 
     </div>

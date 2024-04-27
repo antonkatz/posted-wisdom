@@ -11,7 +11,7 @@ body {
     width: 12em;
     height: 5em;
 
-    border: 2px solid crimson;
+    /*border: 2px solid crimson;*/
     box-sizing: border-box;
 
     position: absolute;

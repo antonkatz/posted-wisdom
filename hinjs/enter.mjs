@@ -15,6 +15,14 @@ export const HINGES_FACTORY_PROP = Symbol('HINGES_FACTORY_PROP')
  * @returns {T & function(*, *=): *}
  */
 export function enter(fn, exports) {
+  if (!exports) {
+    if (typeof fn !== 'object') {
+      throw new Error('Must pass an exports object')
+    }
+    exports = fn
+    fn = null
+  }
+
   const objectType = Symbol(String.fromCharCode(Math.round(Math.random() * 29)) + Math.random())
   const caller = (PT, args = undefined) => {
     if (PT?.[HINGES_TYPE_PROP] != undefined) {
@@ -31,7 +39,7 @@ export function enter(fn, exports) {
     const T = {
       [HINGES_PARENT_PROP]: PT || null,
       [HINGES_FACTORY_PROP]: caller,
-      [HINGES_TYPE_PROP] : objectType
+      [HINGES_TYPE_PROP]: objectType
     }
     const opRes = fn && fn(T, args)
     // todo, should this ever return the opRes??
@@ -63,7 +71,7 @@ function processExports(exports, ofType) {
   const liftedExports = Object.fromEntries(
       Object.entries(exports)
           .map(([k, v]) => {
-            if (v[RAW_STACK]) return [k,v]
+            if (v[RAW_STACK]) return [k, v]
 
             const isCommand = k.startsWith('do') && k[2] && k[2] === k[2].toUpperCase()
 
