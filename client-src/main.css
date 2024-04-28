@@ -5,6 +5,15 @@ body {
     display: block;
     height: 100vh;
     width: 100vw;
+
+    background-color: #ffffff;
+}
+.canvas-bg {
+    width: 100%;
+    height: 100%;
+    opacity: 0.2;
+    background-image:  repeating-radial-gradient( circle at 0 0, transparent 0, #ffffff 10px ), repeating-linear-gradient( #e5f74555, #e5f745 );
+
 }
 
 .tile {

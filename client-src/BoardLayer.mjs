@@ -1,51 +1,7 @@
 import {enter, hinj} from "../hinjs/hinj.mjs";
 import {Tile} from "./Tile.mjs";
+import {drawBorders, Positioner} from "./Positioner.mjs";
 
-let defaultBorder = '2px solid crimson';
-const Positioner = enter(null, {
-  // tile: hinj(),
-  offsetTileLeft: hinj()
-      .sync((T, ot) => {
-        const x = Positioner.x(ot) + Tile.widthEm(ot)
-        console.log('x', Tile.id(T), x)
-        Positioner.x(T, x)
-        Positioner.y(T, Positioner.y(ot))
-      })
-      .sync((T, ot) => {
-        Positioner.borderLeft(T, '0px')
-      }),
-  offsetTileRight: hinj()
-      .sync((T, ot) => {
-        Positioner.borderRight(T, '0px')
-      }),
-  offsetTileBottom: hinj()
-      .sync((T, ot) => {
-        Positioner.borderBottom(T, '0px')
-      }),
-  offsetTileTop: hinj()
-      .sync((T, ot) => {
-        const y = Positioner.y(ot) + Tile.heightEm(ot)
-        console.log('y', Tile.id(T), y)
-        Positioner.y(T, y)
-        Positioner.x(T, Positioner.x(ot))
-      })
-      .sync((T, ot) => {
-        Positioner.borderTop(T, '0px')
-      }),
-
-  borderLeft: hinj(defaultBorder),
-  borderRight: hinj(defaultBorder),
-  borderTop: hinj(defaultBorder),
-  borderBottom: hinj(defaultBorder),
-
-  isCenter: hinj(false),
-  // .sync(positionTile),
-
-  x: hinj(T => Tile.widthEm(T) / 2 * -1),
-  // .sync(positionTile),
-  y: hinj(T => Tile.heightEm(T) / 2 * -1),
-  // .sync(positionTile),
-})
 export const BoardLayer = enter(null, {
   centerTile: hinj()
       .sync((T, tile) => {
@@ -55,42 +11,42 @@ export const BoardLayer = enter(null, {
       }),
 
   current: hinj()
-      .sync((T, t) => console.log('Laying tile', t))
+      // .sync((T, t) => console.log('Laying tile', t))
       .sync((T, p) => positionTile(p))
-      .sync((T, p) => BoardLayer.present(T).add(Tile.id(p)))
+      .sync((T, p) => BoardLayer.drawnTileIds(T).add(Tile.id(p)))
+      .sync((T, p) => BoardLayer.positioners(T).add(p))
       // .sync(layoutTile)
-      .sync(nextTiles)
-      .sync((T,p) => drawBorders(p, null)),
+      .sync(nextTiles),
 
-  present: hinj(() => new Set())
+  isComplete: hinj()
+      .sync(linkBorderTiles) // todo. sould it only run once
+      .sync((T,p) => Array.from(BoardLayer.positioners(T)).forEach(p => drawBorders(p, null))),
+
+  drawnTileIds: hinj(() => new Set()),
+  positioners: hinj(() => new Set()),
 })
 
-const drawBorders = hinj()
-    .sync(T => {
-      const dom = Tile.dom(T)
-      dom.style.borderLeft = Positioner.borderLeft(T)
-      dom.style.borderBottom = Positioner.borderBottom(T)
-      dom.style.borderRight = Positioner.borderRight(T)
-      dom.style.borderTop = Positioner.borderTop(T)
-    })
-
-function positionTile(T) {
+export function positionTile(T) {
   const d = Tile.dom(T)
   d.style.top = `calc(50vh + (${Positioner.y(T)}em))`
   d.style.left = `calc(50vw + (${Positioner.x(T)}em))`
 }
 
 function nextTiles(T, currentPositioner) {
+  let complete = true
   // const next = [Tile.right(tile), Tile.bottom(tile)]
   const r = Tile.right(currentPositioner)
-  if (r && !BoardLayer.present(T).has(Tile.id(r))) {
+  if (r && !BoardLayer.drawnTileIds(T).has(Tile.id(r))) {
+    complete = false
     const p = Positioner(r)
     Positioner.offsetTileLeft(p, currentPositioner)
     Positioner.offsetTileRight(currentPositioner, p)
     BoardLayer.current(T, p)
   }
   const b = Tile.bottom(currentPositioner)
-  if (b && !BoardLayer.present(T).has(Tile.id(b))) {
+  if (b && !BoardLayer.drawnTileIds(T).has(Tile.id(b))) {
+    complete = false
+
     const p = Positioner(b)
     Positioner.offsetTileTop(p, currentPositioner)
     Positioner.offsetTileBottom(currentPositioner, p)
@@ -98,7 +54,53 @@ function nextTiles(T, currentPositioner) {
     BoardLayer.current(T, p)
   }
 
-  // for (const t of next) {
-  //   BoardLayer.current(T, t)
-  // }
+  const l = Tile.left(currentPositioner)
+  if (l && !BoardLayer.drawnTileIds(T).has(Tile.id(l))) {
+    complete = false
+
+    const p = Positioner(l)
+    Positioner.offsetTileRight(p, currentPositioner)
+    Positioner.offsetTileLeft(currentPositioner, p)
+
+    BoardLayer.current(T, p)
+  }
+  const t = Tile.top(currentPositioner)
+  if (t && !BoardLayer.drawnTileIds(T).has(Tile.id(t))) {
+    complete = false
+
+    const p = Positioner(t)
+    Positioner.offsetTileBottom(p, currentPositioner)
+    Positioner.offsetTileTop(currentPositioner, p)
+
+    BoardLayer.current(T, p)
+  }
+
+  if (complete) BoardLayer.isComplete(T, true)
+}
+
+function linkBorderTiles(T) {
+  const positioners = Array.from(BoardLayer.positioners(T))
+  positioners.forEach(p => {
+    if (!Positioner.offsetTileTop(p)) {
+      const op = positioners.find(_ => {
+        const xe = (Positioner.x(_) <= Positioner.x(p)) && (Positioner.x(_) + Tile.widthEm(_) >= Positioner.x(p))
+        const ye = (Positioner.y(_) + Tile.heightEm(_)) == Positioner.y(p)
+
+        if (Tile.id(p) == 2 && Tile.id(_) == 4) {
+          console.log(Positioner.y(_) + Tile.heightEm(_), (Positioner.y(p)))
+          console.log(Positioner.x(_) , Positioner.x(p), Positioner.x(_) + Tile.widthEm(_))
+          console.log(ye, xe)
+          console.log('===')
+        }
+        return xe && ye
+      })
+      if (op) {
+        // if (Tile.id(p) == 4) {
+        //   console.log(Tile.id(op), Positioner.y(op), Positioner.y(p))
+        //   debugger
+        // }
+        Positioner.borderingTilesTop(p, [...Positioner.borderingTilesTop(p), op])
+      }
+    }
+  })
 }

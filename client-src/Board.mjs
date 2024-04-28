@@ -5,14 +5,17 @@ import {BoardLayer} from "./BoardLayer.mjs";
 function linkTiles(T) {
   const tiles = Board.tiles(T)
   const byId = Board.tilesById(T)
-  for (const t of tiles) {
-    const dataset = Tile.dom(t).dataset
+  for (const tile of tiles) {
+    const dataset = Tile.dom(tile).dataset
     const r = dataset.right
     const l = dataset.left
+    const t = dataset.top
     const b = dataset.bottom
 
-    if (r) Tile.right(t, byId[r])
-    if (b) Tile.bottom(t, byId[b])
+    if (r) Tile.right(tile, byId[r])
+    if (b) Tile.bottom(tile, byId[b])
+    if (t) Tile.top(tile, byId[t])
+    if (l) Tile.left(tile, byId[l])
 
     // console.log('RB', r, b)
   }

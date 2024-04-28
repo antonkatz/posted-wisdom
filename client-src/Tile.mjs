@@ -3,6 +3,8 @@ import {Board} from "./Board.mjs";
 
 export const Tile = enter(null,{
   dom: hinj()
+      .sync(T => Tile.dom(T).style.background = 'pink')
+
       .sync(detectActiveStatus)
       .sync(T => Tile.id(T, Tile.dom(T).id.replace('tile_', '')))
       .sync(readSize),
@@ -13,8 +15,8 @@ export const Tile = enter(null,{
       .sync(T => Tile.dom(T).style.height = `${Tile.heightEm(T)}em`),
 
 
-  id: hinj()
-      .sync(T => Tile.dom(T).append(Tile.id(T))),
+  id: hinj(),
+      // .sync(T => Tile.dom(T).append(Tile.id(T))),
   isActive: hinj()
       .sync(T => {
         if (Tile.isActive(T)) {
@@ -26,7 +28,8 @@ export const Tile = enter(null,{
       .sync((T,r) => console.log('R', r)),
   bottom: hinj()
       .sync((T,r) => console.log('B', r)),
-
+  left: hinj(),
+  top: hinj()
 })
 
 function detectActiveStatus(T) {
