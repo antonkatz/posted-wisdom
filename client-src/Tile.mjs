@@ -3,11 +3,15 @@ import {Board} from "./Board.mjs";
 
 export const Tile = enter(null,{
   dom: hinj()
-      .sync(T => Tile.dom(T).style.background = 'pink')
-
+      .sync((T, dom) => {
+        const c = dom.parentNode.dataset.color
+        if (c) Tile.color(T, c)
+      })
       .sync(detectActiveStatus)
       .sync(T => Tile.id(T, Tile.dom(T).id.replace('tile_', '')))
       .sync(readSize),
+  color: hinj('#ffc0cb')
+      .sync(T => Tile.dom(T).style.background = Tile.color(T) + '06'),
   aspectRatio: hinj('12:5'),
   widthEm: hinj(12)
       .sync(T => Tile.dom(T).style.width = `${Tile.widthEm(T)}em`),

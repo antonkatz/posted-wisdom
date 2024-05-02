@@ -2,7 +2,7 @@ import {Tile} from "./Tile.mjs";
 import {enter} from "../hinjs/enter.mjs";
 import {hinj} from "../hinjs/hinj.mjs";
 
-let defaultBorder = '1px solid crimson';
+const defaultBorder = T => `1px solid ${Tile.color(T)}`;
 export const Positioner = enter(null, {
   // tile: hinj(),
   offsetTileLeft: hinj()
@@ -43,16 +43,16 @@ export const Positioner = enter(null, {
 
   borderingTilesTop: hinj(() => [])
       .sync((T, ot) => {
-        ot.length && Positioner.borderTop(T, '0px')
+        ot.length && ot.every(t => Tile.color(t) == Tile.color(T)) && Positioner.borderTop(T, '0px')
       }),
   borderingTilesBottom: hinj(() => []).sync((T, ot) => {
-    ot.length && Positioner.borderBottom(T, '0px')
+    ot.length && ot.every(t => Tile.color(t) == Tile.color(T)) && Positioner.borderBottom(T, '0px')
   }),
   borderingTilesLeft: hinj(() => []).sync((T, ot) => {
-    ot.length && Positioner.borderLeft(T, '0px')
+    ot.length && ot.every(t => Tile.color(t) == Tile.color(T)) && Positioner.borderLeft(T, '0px')
   }),
   borderingTilesRight: hinj(() => []).sync((T, ot) => {
-    ot.length && Positioner.borderRight(T, '0px')
+    ot.length && ot.every(t => Tile.color(t) == Tile.color(T)) && Positioner.borderRight(T, '0px')
   }),
 
   borderLeft: hinj(defaultBorder),
@@ -75,7 +75,6 @@ export const drawBorders = hinj()
       dom.style.borderBottom = Positioner.borderBottom(T)
       dom.style.borderRight = Positioner.borderRight(T)
       dom.style.borderTop = Positioner.borderTop(T)
-      if (Tile.id(T) == 2) debugger
 
     })
     // .sync(T => {
