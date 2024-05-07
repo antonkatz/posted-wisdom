@@ -47,8 +47,9 @@ function readSize(T) {
     const [w, h] = ar.split(':')
     const r = w / h
 
-    Tile.widthEm(T, 5 * r)
-    Tile.heightEm(T, 5)
+    Tile.aspectRatio(T, ar)
+    Tile.widthEm(T, w * 3)
+    Tile.heightEm(T, h * 3)
   }
 
 }

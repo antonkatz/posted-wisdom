@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PostedWisdom</title>
+    <script src="client-src/main.mjs" type="module"></script>
+    <link rel="stylesheet" href="client-src/main.css">
+</head>
+<body>
+
+<!-- walk field exclusevely by clicking on active tile
+ wormholes happen exclusevely backwards
+ -->
+
+    <div class="canvas-container" id="board">
+        <div class="canvas-bg"></div>
+
+        <group data-color="#dc143c">
+        <div class="tile active" id="tile_1" data-right="2" data-top="4" data-aspect-ratio="1:1">
+            <img src="https://posted-wisdom.s3.us-east-2.amazonaws.com/family-base.jpg">
+        </div>
+
+        <div class="tile" id="tile_2" data-bottom="3" data-aspect-ratio="1:1">
+            <img src="https://posted-wisdom.s3.us-east-2.amazonaws.com/family-base-1.jpg">
+        </div>
+
+
+<!--        // worholes are when a bottom tile has a top tile that is different-->
+<!--        // from top tile that just defined the bottom tile as its bottom-->
+
+<!--        eg -->
+        <div class="tile" id="tile_3" data-aspect-ratio="1:1">
+            <img src="https://posted-wisdom.s3.us-east-2.amazonaws.com/family-graphic.jpg">
+        </div>
+
+        <div class="tile" id="tile_4" data-top="7" data-aspect-ratio="2:1">
+<!--            <img src="https://posted-wisdom.s3.us-east-2.amazonaws.com/family-graphic.jpg">-->
+            Daughter & Father & Son <br>
+            Childminding CO.
+        </div>
+        <div class="tile" id="tile_7" data-top="5" data-aspect-ratio="2:1">
+            <img src="https://posted-wisdom.s3.us-east-2.amazonaws.com/dfs-babysitting.jpg">
+        </div>
+        </group>
+
+        <group data-color="#ffdf00">
+            <div class="tile" id="tile_5" data-left="6" data-right="8" data-aspect-ratio="2:1">
+                Ottawa trip
+            </div>
+            <div class="tile" id="tile_6" data-aspect-ratio="2:1">
+                            <img src="https://foodgrainsbank.ca/wp-content/uploads/2020/04/foodgrainsbank-logo.svg">
+            </div>
+        </group>
+
+        <group data-color="#0080FF">
+            <div class="tile" id="tile_8" data-right="9" data-aspect-ratio="3:3">
+                <p>Work</p>
+            </div>
+            <div class="tile" id="tile_9" data-aspect-ratio="2:1">
+
+            </div>
+        </group>
+
+    </div>
+</body>
+</html>
