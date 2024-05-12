@@ -10,7 +10,8 @@ export const Tile = enter(null,{
       .sync(detectActiveStatus)
       .sync(T => Tile.id(T, Tile.dom(T).id.replace('tile_', '')))
       .sync(readSize),
-  color: hinj('#ffc0cb')
+  // color: hinj('#ffc0cb')
+  color: hinj('#ffffff')
       .sync(T => Tile.dom(T).style.background = Tile.color(T) + '06'),
   aspectRatio: hinj('12:5'),
   widthEm: hinj(12)
