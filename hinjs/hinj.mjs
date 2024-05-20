@@ -1,12 +1,8 @@
-import {enter, HINGES_ANCESTRY_PROP, HINGES_FACTORY_PROP} from './enter.mjs'
+import {group} from './group.mjs'
 import {exit} from './exit.mjs'
-import {isOfType} from "./isOfType.mjs";
-import {findAncestor} from "./findAncestor.mjs";
-import {RAW_STACK} from "./consts.mjs";
+import {ACCESSOR, HINGES_ANCESTRY_PROP, RAW_STACK} from "./consts.mjs";
 
-export {enter, exit}
-
-export const ACCESSOR = Symbol('ACCESSOR')
+export {group, exit}
 
 /**
  * @template T {function(*, *=): *}
@@ -15,21 +11,12 @@ export const ACCESSOR = Symbol('ACCESSOR')
  * @returns {{sync: T, async: T} & function(*, *=): *}
  */
 let pi = 0
+
 export function hinj(starting = undefined) {
   const pointer = Symbol(pi++)
-  // const pointer = pi++
-  // const pointer = Symbol(Math.random().toString())
   let stack = null
 
   const builder = (_this, args = undefined, remappedPointer = pointer) => {
-
-    // const _stack = _this[HINGES_FACTORY_PROP][pointer]
-    // const _this = !!_stack ? _startingThis : findAncestor(_startingThis, pointer)
-    // this allows for extensions to be called
-    // const remappedPointer = _stack[ACCESSOR]
-
-    // const stack = remappedPointer === pointer ? definitionStack : _stack
-    // const remappedPointer = isReferringToSelf ? pointer : stack[ACCESSOR]
 
     if (args !== undefined) {
 
@@ -58,6 +45,10 @@ export function hinj(starting = undefined) {
   builder[ACCESSOR] = pointer
   builder[HINGES_ANCESTRY_PROP] = [pointer]
 
+  builder.cmd = (_this, args, remappedPointer = pointer) => {
+    return stack(_this, args, remappedPointer)
+  }
+
 
   builder.sync = (wfn) => {
     isAsyncMode = false
@@ -79,7 +70,7 @@ export function hinj(starting = undefined) {
       const pfn = stack
       stack = (_t, v, p) => {
         // v =
-            pfn(_t, v, p)
+        pfn(_t, v, p)
         const vNext = wfn(_t, v, p)
         return vNext //=== undefined ? v : vNext
       }
@@ -102,8 +93,8 @@ export function hinj(starting = undefined) {
       stack = (_t, vP, p) => {
         // if (vP?.then) {
         //   vP.then(v => {
-            const vNext = wfn(_t, vP, p)
-          // })
+        const vNext = wfn(_t, vP, p)
+        // })
         if (vNext?.then) {
           return vNext// === undefined ? v : vNext
         } else {
@@ -127,7 +118,7 @@ export function hinj(starting = undefined) {
       stack = (_t, vP, p) => {
         // if (vP?.then) {
         const r = pfn(_t, vP, p)
-          return r.then(() => next(_t, vP, p))
+        return r.then(() => next(_t, vP, p))
       }
     }
 
@@ -136,18 +127,8 @@ export function hinj(starting = undefined) {
     return builder
   }
 
+  // TODO. Must and Debug functions
   // TODO. must and debug should unwrap promises automatically
-
-  //
-  // builder.must = T => {
-  //   // todo. this must be added to set watcher
-  //   const v = T[p]
-  //   if (v === undefined) {
-  //     throw new Error('Not found')
-  //   } else {
-  //     return builder(T)
-  //   }
-  // }
 
   builder.debug = (tag, showStack = false) => {
     builder.sync((T, a) => {

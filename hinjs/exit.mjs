@@ -1,7 +1,6 @@
-import {HINGES_PARENT_PROP} from "./enter.mjs";
+import {HINGES_PARENT_PROP, RAW_STACK} from "./consts.mjs";
 
 export function exit(fn) {
-  let watcher = null
   const caller = (T, args = undefined) => {
     if (T?.[HINGES_PARENT_PROP] !== undefined) {
       // everything is good
@@ -17,18 +16,10 @@ export function exit(fn) {
     if (opRes === undefined) {
       throw new Error('Exit must return something')
     }
-    if (watcher) watcher(opRes)
     return opRes
   }
 
-  caller.debug = (tag, showStack = false) => {
-    if (showStack) throw new Error('Not implemented')
-    watcher = (res) => {
-      console.debug(tag || '-exit-', res)
-    }
-    return caller
-  }
-
+  caller[RAW_STACK] = fn
 
   return caller
 }

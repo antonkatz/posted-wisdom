@@ -1,4 +1,4 @@
-import {HINGES_ANCESTRY_PROP, HINGES_TYPE_PROP} from "./enter.mjs";
+import {HINGES_ANCESTRY_PROP, HINGES_TYPE_PROP} from "./consts.mjs";
 
 export function listAncestryFromExports(exports) {
   if (!exports.length) return null

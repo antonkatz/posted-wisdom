@@ -1,7 +1,7 @@
-import {enter, hinj} from "../hinjs/hinj.mjs";
+import {group, hinj} from "../hinjs/hinj.mjs";
 import {Board} from "./Board.mjs";
 
-export const Tile = enter(null,{
+export const Tile = group(null,{
   dom: hinj()
       .sync((T, dom) => {
         const c = dom.parentNode.dataset.color
@@ -28,6 +28,17 @@ export const Tile = enter(null,{
           Board.activeTile(T, T)
         }
       }),
+
+  subtileIds: hinj()
+      .sync((T, list) => {
+        const ts = []
+        for (const id of list) {
+          ts.push(Board.tilesById(T)[id])
+        }
+        if (ts.length)debugger
+        Tile.subtiles(T, ts)
+      }),
+  subtiles: hinj(),
 
   right: hinj()
       .sync((T,r) => console.log('R', r)),

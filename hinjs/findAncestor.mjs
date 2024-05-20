@@ -1,5 +1,6 @@
 import {isOfType} from "./isOfType.mjs";
-import {HINGES_PARENT_PROP} from "./enter.mjs";
+
+import {HINGES_PARENT_PROP} from "./consts.mjs";
 
 export function findAncestor(T, ofType) {
   const p = T?.[HINGES_PARENT_PROP]
@@ -11,6 +12,5 @@ export function findAncestor(T, ofType) {
     }
   } else {
     throw new Error('Cannot find ancestor with type')
-    // throw new Error('Cannot find ancestor with type for hinge named `' + hinjName + '`')
   }
 }

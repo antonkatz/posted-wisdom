@@ -1,5 +1,5 @@
 import Benchmark from 'benchmark';
-import {enter, hinj} from "../hinj.mjs";
+import {group, hinj} from "../hinj.mjs";
 import Bench from "tinybench";
 
 // const suite = new Benchmark.Suite;
@@ -13,7 +13,7 @@ function set(T, args) {
   T.value = args
 }
 
-const C = enter(null, {
+const C = group(null, {
   doOp: hinj()
       .sync((T, args) => C.result(T, C.result(T) + args)),
   result: hinj()

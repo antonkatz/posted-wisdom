@@ -1,9 +1,10 @@
 import {Tile} from "./Tile.mjs";
-import {enter} from "../hinjs/enter.mjs";
+import {group} from "../hinjs/group.mjs";
 import {hinj} from "../hinjs/hinj.mjs";
 
 const defaultBorder = T => `1px solid ${Tile.color(T)}`;
-export const Positioner = enter(null, {
+export const Positioner = group(null, {
+  layer: hinj(),
   // tile: hinj(),
   offsetTileLeft: hinj()
       .sync((T, ot) => {

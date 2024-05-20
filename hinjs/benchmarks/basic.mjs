@@ -1,5 +1,5 @@
 import Benchmark from 'benchmark';
-import {enter, hinj} from "../hinj.mjs";
+import {group, hinj} from "../hinj.mjs";
 
 const suite = new Benchmark.Suite;
 
@@ -7,7 +7,7 @@ function doOp(T, args) {
   Math.random() + args
 }
 
-const C = enter(null, {
+const C = group(null, {
   doOp: hinj()
       .sync(doOp)
 })

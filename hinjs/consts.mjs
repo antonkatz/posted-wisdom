@@ -1,2 +1,7 @@
 export const RAW_STACK = Symbol('RAW_STACK')
-export const HINJ_NAME = Symbol('HIGE_NAME')
+export const HINJ_NAME = Symbol('HINJ_NAME')
+export const ACCESSOR = Symbol('ACCESSOR')
+export const HINGES_PARENT_PROP = Symbol('HINGES_PARENT_PROP')
+export const HINGES_TYPE_PROP = Symbol('HINGES_TYPE_PROP')
+export const HINGES_ANCESTRY_PROP = Symbol('HINGES_ANCESTRY_PROP')
+export const HINGES_FACTORY_PROP = Symbol('HINGES_FACTORY_PROP')

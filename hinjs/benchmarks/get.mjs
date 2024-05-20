@@ -1,5 +1,5 @@
 import Benchmark from 'benchmark';
-import {enter, hinj} from "../hinj.mjs";
+import {group, hinj} from "../hinj.mjs";
 import Bench from "tinybench";
 
 const bench = new Bench({time: 500, warmupTime: 100})
@@ -8,7 +8,7 @@ function get(T) {
   return T.value
 }
 
-const C = enter(null, {
+const C = group(null, {
   result: hinj()
 })
 

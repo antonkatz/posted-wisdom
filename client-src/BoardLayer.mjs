@@ -1,15 +1,19 @@
-import {enter, hinj} from "../hinjs/hinj.mjs";
+import {group, hinj} from "../hinjs/hinj.mjs";
 import {Tile} from "./Tile.mjs";
 import {drawBorders, Positioner} from "./Positioner.mjs";
+import {Board} from "./Board.mjs";
 
-export const BoardLayer = enter(null, {
+export const BoardLayer = group(null, {
   centerTile: hinj()
       .sync((T, tile) => {
         const p = Positioner(tile)
+        Positioner.layer(p, T)
         Positioner.isCenter(p, true)
         BoardLayer.current(T, p)
       }),
 
+  offsetCenterY: hinj('50vh'),
+  offsetCenterX: hinj('50vw'),
   current: hinj()
       // .sync((T, t) => console.log('Laying tile', t))
       .sync((T, p) => positionTile(p))
@@ -28,17 +32,27 @@ export const BoardLayer = enter(null, {
 
 export function positionTile(T) {
   const d = Tile.dom(T)
-  d.style.top = `calc(50vh + (${Positioner.y(T)}em))`
-  d.style.left = `calc(50vw + (${Positioner.x(T)}em))`
+  d.style.top = `calc(${BoardLayer.offsetCenterY(Positioner.layer(T))} + (${Positioner.y(T)}em))`
+  d.style.left = `calc(${BoardLayer.offsetCenterX(Positioner.layer(T))} + (${Positioner.x(T)}em))`
 }
 
 function nextTiles(T, currentPositioner) {
   let complete = true
   // const next = [Tile.right(tile), Tile.bottom(tile)]
+
+  if (Tile.subtiles(currentPositioner).length) {
+    const l = BoardLayer(T)
+    const ts = Tile.subtiles(currentPositioner)
+    debugger
+    BoardLayer.centerTile(l, ts[0])
+  }
+
   const r = Tile.right(currentPositioner)
   if (r && !BoardLayer.drawnTileIds(T).has(Tile.id(r))) {
     complete = false
     const p = Positioner(r)
+    Positioner.layer(p, T)
+
     Positioner.offsetTileLeft(p, currentPositioner)
     Positioner.offsetTileRight(currentPositioner, p)
     BoardLayer.current(T, p)
@@ -48,6 +62,7 @@ function nextTiles(T, currentPositioner) {
     complete = false
 
     const p = Positioner(b)
+    Positioner.layer(p, T)
     Positioner.offsetTileTop(p, currentPositioner)
     Positioner.offsetTileBottom(currentPositioner, p)
 
@@ -59,6 +74,7 @@ function nextTiles(T, currentPositioner) {
     complete = false
 
     const p = Positioner(l)
+    Positioner.layer(p, T)
     Positioner.offsetTileRight(p, currentPositioner)
     Positioner.offsetTileLeft(currentPositioner, p)
 
@@ -69,6 +85,7 @@ function nextTiles(T, currentPositioner) {
     complete = false
 
     const p = Positioner(t)
+    Positioner.layer(p, T)
     Positioner.offsetTileBottom(p, currentPositioner)
     Positioner.offsetTileTop(currentPositioner, p)
 
